@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,12 +40,15 @@ public class SockService {
     public SockDto registerSockArrival(SockCreateDto sockDto) {
         log.info("Register sock arrival {}", sockDto);
 
-        Sock sock = sockRepository
-                .findByColorHexAndCottonPercentage(sockDto.getColorHex(), sockDto.getCottonPercentage())
-                .orElseGet(() -> sockMapper.toSock(sockDto));
+        Optional<Sock> optionalSock = sockRepository
+                .findByColorHexAndCottonPercentage(sockDto.getColorHex(), sockDto.getCottonPercentage());
 
-        sock.setQuantity(sock.getQuantity() + sockDto.getQuantity());
-        return sockMapper.toDto(sockRepository.save(sock));
+        if (optionalSock.isPresent()) {
+            Sock sock = optionalSock.get();
+            sock.setQuantity(sock.getQuantity() + sockDto.getQuantity());
+            return sockMapper.toDto(sockRepository.save(sock));
+        }
+        return sockMapper.toDto(sockRepository.save(sockMapper.toSock(sockDto)));
     }
 
     public SockDto registerSockRelease(SockCreateDto sockDto) {
