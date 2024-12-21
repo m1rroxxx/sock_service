@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/sock_V001_init.sql
+
