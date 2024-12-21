@@ -92,10 +92,11 @@ public class SockService {
         return sockMapper.toDto(sockRepository.save(sock));
     }
 
+    @Transactional
     public List<SockDto> loadingBatchesFromCsv(MultipartFile csv) {
         log.info("Loading batches from csv file");
 
-        List<Sock> batch = new ArrayList<>();
+        List<SockDto> batch = new ArrayList<>();
 
         try (Reader reader = new InputStreamReader(csv.getInputStream())) {
 
@@ -116,15 +117,14 @@ public class SockService {
                 sockDto.setQuantity(Integer.parseInt(record.get("quantity")));
 
                 validateSock(sockDto);
-
-                batch.add(sockMapper.toSock(sockDto));
+                batch.add(registerSockArrival(sockDto));
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return sockMapper.toDto(sockRepository.saveAll(batch));
+        return batch;
     }
 
     private void validateSock(SockCreateDto sockDto) {

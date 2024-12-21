@@ -13,16 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -106,13 +106,16 @@ public class SockControllerTest {
         sockDto.setCottonPercentage(50);
         sockDto.setQuantity(10);
 
-        MultipartFile csv = mock();
+        MockMultipartFile file = new MockMultipartFile(
+                "csv",
+                "test.csv",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                "csv table".getBytes()
+        );
 
         when(sockService.loadingBatchesFromCsv(any())).thenReturn(List.of(sockDto, sockDto));
 
-        mockMvc.perform(post("/api/socks/batch")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(csv.getBytes())))
+        mockMvc.perform(multipart("/api/socks/batch").file(file))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2));
     }

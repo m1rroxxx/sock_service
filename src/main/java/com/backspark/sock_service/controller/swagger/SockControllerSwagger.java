@@ -6,6 +6,7 @@ import com.backspark.sock_service.dto.SockFilterDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface SockControllerSwagger {
     SockDto registerSockRelease(SockCreateDto sockRegisterDto);
 
     @Operation(summary = "Загрузка партий носков из CSV файла")
-    List<SockDto> registerBatchSocks(@Parameter(description = "файл .csv") MultipartFile csv);
+    List<SockDto> registerBatchSocks(@Parameter(description = "файл csv.csv") @RequestParam("csv") MultipartFile csv);
 
     @Operation(summary = "Получение общего количества носков с фильтрацией и сортировкой",
             description = "если фильтр не нужен, задать ему значение null или ек включать в объект")

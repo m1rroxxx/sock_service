@@ -8,6 +8,7 @@ import com.backspark.sock_service.service.SockService;
 import com.backspark.sock_service.sort.SortingParameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class SockController implements SockControllerSwagger {
         return sockService.registerSockRelease(sockRegisterDto);
     }
 
-    @PostMapping("/batch")
+    @PostMapping(value = "/batch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<SockDto> registerBatchSocks(@RequestBody @Validated MultipartFile csv) {
         return sockService.loadingBatchesFromCsv(csv);
     }
