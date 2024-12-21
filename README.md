@@ -1,4 +1,5 @@
 ﻿# sock_service
+ REST API для учета носков на складе магазина
 1. в корне проекта docker-compose.yaml запустить с помощью команд 
     docker-compose build
     docker-compose up -d
